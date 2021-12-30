@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style> 
+    body{width: 100%; height: 100vh; overflow: hidden; margin: 0; padding: 0;}
+    #modal{font-size: 70px ; text-align: center; position: absolute; top: 50%;left: 50%; transform: -50%, -50%;color: white; display: none; }
+    .active {display: block;}
+</style>
+<body>
+
+  <div id="modal">
+    <p>HI!</p>
+  </div>
+
+    <script src="three.js"></script>
+    <script src="OrbitControls.js"></script>
+    <script type="module" src="GLTFLoader.js"></script>
+    <script type="module">
+        import { GLTFLoader } from "./GLTFLoader.js";
+
+        let scene, camera, renderer, rayCast, mouse;
+        var lenderBox = document.getElementById('box')
+        const object = [];
+
+
+        rayCast = new THREE.Raycaster();
+
+        mouse = new THREE.Vector2(1,1);
+
+
+        function toggleModal() {
+          var modal = document.getElementById('modal');
+            modal.addclass(".active");
+        }
+
+
+        function init() {
+            scene = new THREE.Scene();
+
+
+            camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+
+            // var renderer = new THREE.WebGLRenderer();
+            
+            renderer = new THREE.WebGLRenderer({antialias:true});
+            renderer.setSize(window.innerWidth,window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            camera.position.set(0, 0, 10);
+
+
+
+
+
+
+      
+            
+            // renderer = new THREE.WebGLRenderer({antialias:true});
+            // renderer.setSize(window.innerWidth,window.innerHeight);
+            // document.body.appendChild(renderer.domElement);
+
+
+
+
+
+
+
+            var loader = new GLTFLoader();
+
+            var root;
+          
+            loader.load("Note.gltf", function(gltf) {
+                const root = gltf.scene;
+                gltf.scene.rotateX(THREE.Math.degToRad(90));
+                gltf.scene.position.z = -50.0;
+                gltf.scene.scale.set(2, 2, 2)
+                scene.add( root);
+        
+                gltf.scene.userData.draggable = true;
+                gltf.scene.userData.name ='GLTF'
+            
+            })
+          
+                scene.background = new THREE.Color(0xffffff);
+
+            var light = new THREE.HemisphereLight(0xffffff);
+            scene.add(light);
+
+      
+
+            let controls = new THREE.OrbitControls(camera); 
+            controls.addEventListener('change',renderer);
+            controls.enablePan = false;
+            //이동시 관성 추가
+            controls.enableDamping = true;
+            controls.rotateSpeed = - 0.15;
+            //확대 축소 최소 최대 사이즈
+            controls.minDistance =10;
+            controls.maxDistance = 40;
+
+            let materialArray = [];
+            let texture_ft = new THREE.TextureLoader().load('./static/images/sky_box_ft.png');
+            let texture_bk = new THREE.TextureLoader().load('./static/images/sky_box_bk.png');
+            let texture_up = new THREE.TextureLoader().load('./static/images/sky_box_up.png');
+            let texture_dn = new THREE.TextureLoader().load('./static/images/sky_box_dn.png');
+            let texture_rt = new THREE.TextureLoader().load('./static/images/sky_box_lf.png');
+            let texture_lf = new THREE.TextureLoader().load('./static/images/sky_box_rt.png');
+
+            materialArray.push(new THREE.MeshBasicMaterial({map : texture_ft}));
+            materialArray.push(new THREE.MeshBasicMaterial({map : texture_bk}));
+            materialArray.push(new THREE.MeshBasicMaterial({map : texture_up}));
+            materialArray.push(new THREE.MeshBasicMaterial({map : texture_dn}));
+            materialArray.push(new THREE.MeshBasicMaterial({map : texture_rt}));
+            materialArray.push(new THREE.MeshBasicMaterial({map : texture_lf}));
+
+            for (let i=0; i<6; i++) {
+                materialArray[i].side = THREE.BackSide;
+            }
+
+            let skyboxGeo = new THREE.BoxGeometry(100,100,100);
+            let skybox = new THREE.Mesh(skyboxGeo, materialArray);
+            //https://threejs.org/docs/#api/en/loaders/TextureLoader
+
+
+            //ground
+            const groundGeometry = new THREE.PlaneGeometry( 20, 20, 1, 1 );
+				const groundMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+				const ground = new THREE.Mesh( groundGeometry, groundMaterial );
+				ground.rotation.x = Math.PI * - 0.5;
+        
+                ground.userData.draggable = true;
+                ground.userData.name ='GROUND'
+
+
+
+        //         const textureLoader = new THREE.TextureLoader();
+		// 		textureLoader.load( 'tech_icon.png', function ( texturemap ) {
+        //             const material = new THREE.MeshBasicMaterial( {
+        //                 map: texturemap
+        //             } );
+
+        // } );
+
+
+
+                // const groundGeometry = new THREE.PlaneGeometry( 100, 100, 1, 1 );
+		        // groundMaterial.push(new THREE.MeshBasicMaterial( {  map: textureicon } ));
+        // const ground = new THREE.Mesh( groundGeometry, groundMaterial );
+        // ground.rotation.x = Math.PI * - 0.5;
+        
+        // const textureLoader = new THREE.TextureLoader();
+        // let textureicon = new THREE.TextureLoader().load('tech_icon.png');
+        // let groundMaterial;
+
+
+
+            ground.position.y = -20.0;
+
+            scene.add( ground );
+         
+            scene.add(skybox);
+
+            function animate(){
+            renderer.render(scene,camera);
+         
+            requestAnimationFrame(animate);
+          
+            //이동시 관성 추가할때 필요함
+            controls.update();
+        }  
+            animate();
+ 
+
+            window.addEventListener( 'mousemove', onMouseMove, false );
+            window.addEventListener('click', clickOnSprite, false);
+            window.addEventListener( 'resize', onWindowResize );
+
+        }
+
+        //화면 리사이징
+        function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        }
+
+
+        function onMouseMove( event ) {
+
+// calculate mouse position in normalized device coordinates
+// (-1 to +1) for both components
+
+mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
+function render() {
+    console.log("CLICK!" + event.clientX + "," + event.clientY);
+    console.log("Intersection: ");
+
+    raycaster.setFromCamera( mouse, camera );
+
+    const intersection = raycaster.intersectObject( ground );
+    if ( intersection.length > 0 ) {
+
+const instanceId = intersection[ 0 ].instanceId;
+
+mesh.setColorAt( instanceId, color.setHex( Math.random() * 0xffffff ) );
+mesh.instanceColor.needsUpdate = true;
+
+}
+
+} 
+
+
+
+//         let onMouseClick = function(e){
+
+              
+
+//           let gap1 = e.clientX - e.offsetX
+
+//           let gap2 = e.clientY - e.offsetY
+
+
+
+//           mouse.x = ( (e.clientX - gap1)/(window.innerWidth*0.375) )*2 -1;
+
+//           mouse.y =  -( (e.clientY-gap2)/(window.innerHeight*0.375) )*2 +1;
+
+
+
+//           rayCast.setFromCamera(mouse,camera);
+
+//           }
+
+// let mainLoop = function(){
+  
+//   let intersects = rayCast.intersectObjects(scene.children);
+//   intersects.forEach(obj=>obj.material.color.set(0x00ff00));
+// }
+
+
+
+// function render() {
+
+
+// // find intersections
+
+// raycaster.setFromCamera(mouse, camera)
+
+
+// var intersects = raycaster.intersectObjects(ground, true);
+
+
+// intersect.object.material.color.set('#0000ff')
+// // // ray에 교차하는 object들의 색상을 파란색으로 교체!
+// // for(const intersect of intersects)
+// // {
+// //     intersect.object.material.color.set('#0000ff')
+// // }
+
+// // // 모든 object들을 순회하면서 교차하지 않으면 빨간색으로 교체!
+// // for(const ground of objectsToTest)
+// // {
+// //     if(!intersects.find(intersect => intersect.ground === object))
+// //     {
+// //         ground.material.color.set('#ff0000')
+// //     }
+// // }
+
+// }
+        init();
+    </script>
+</body>
+</html>

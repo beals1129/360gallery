@@ -1,0 +1,178 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.0.cd42b995)"
+    },
+    "extensionsUsed": [
+        "FB_ngon_encoding"
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 239,
+            "type": "VEC3",
+            "max": [
+                1.0,
+                1.4042181968688965,
+                0.08698907494544983
+            ],
+            "min": [
+                -1.0,
+                -1.4042181968688965,
+                0.00020487233996391296
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 239,
+            "type": "VEC3",
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 239,
+            "type": "VEC2",
+            "max": [
+                0.9971837997436523,
+                0.9931188225746155
+            ],
+            "min": [
+                0.0021902918815612795,
+                0.0011608004570007325
+            ]
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 636,
+            "type": "SCALAR",
+            "max": [
+                238
+            ],
+            "min": [
+                0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 10192,
+            "uri": "result.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 2868,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 2868,
+            "byteLength": 2868,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 5736,
+            "byteLength": 1912,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 7648,
+            "byteLength": 2544,
+            "target": 34963
+        }
+    ],
+    "materials": [
+        {
+            "name": "Legal Pad",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929,
+                    1.0
+                ],
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.9820612668991089
+            }
+        }
+    ],
+    "meshes": [
+        {
+            "name": "Legal Pad",
+            "primitives": [
+                {
+                    "extensions": {
+                        "FB_ngon_encoding": {}
+                    },
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 3,
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "name": "RootNode",
+            "children": [
+                1
+            ]
+        },
+        {
+            "name": "Legal Pad",
+            "matrix": [
+                100.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -0.000016292067812173629,
+                -100.0,
+                0.0,
+                0.0,
+                100.0,
+                -0.000016292067812173629,
+                0.0,
+                0.0,
+                -0.01993289589881897,
+                0.0,
+                1.0
+            ],
+            "mesh": 0
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "scene": 0
+}
